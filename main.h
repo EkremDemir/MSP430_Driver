@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include "msp430fr2433.h"
 #include "msp430_driver.h"
+#include "msp430_gpio_driver.h"
 
 
 #endif /* MAIN_H_ */

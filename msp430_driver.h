@@ -10,6 +10,16 @@
 
 #include "main.h"
 
+
+
+typedef enum
+{
+    STATE_OK = 0x01,
+    STATE_ERROR = 0x11
+
+}MSP_Status_t;
+
+/* */
 /*******************START:Processor Specific Details **************************/
 
 #define SFR_BASEADDR            __MSP430_BASEADDRESS_SFR__
@@ -45,7 +55,19 @@
 
 #define ADC_BASEADDR            __MSP430_BASEADDRESS_ADC__
 
+/* */
 
+#define PORT2_OFFSET            (0x01)
+
+#define PORT1                   ((PORT_RegDef_t*)__MSP430_BASEADDRESS_PORT1_R__)
+#define PORT2                   ((PORT_RegDef_t*)__MSP430_BASEADDRESS_PORT2_R__ + PORT2_OFFSET)
+#define PORT3                   ((PORT_RegDef_t*)__MSP430_BASEADDRESS_PORT3_R__)
+
+/* */
+
+#define EnorDiGPIO(EN) ((EN==ENABLE) ? (PM5CTL0 &= ~LOCKLPM5) : (PM5CTL0 |= LOCKLPM5))
+
+/* */
 typedef struct
 {
   uint16_t PIN;      /*!< Specifies the operating mode for the selected pins.
