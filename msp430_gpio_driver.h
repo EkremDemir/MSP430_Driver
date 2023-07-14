@@ -19,9 +19,11 @@
 #define PORT_MODE_OUTPUT 1
 #define PORT_MODE_ALT_FUNC 2
 
-#define PORT_ALT_FUNC_PRIMARY     1 //CAHNGE IT LATER
-#define PORT_ALT_FUNC_SECONDARY   2
-#define PORT_ALT_FUNC_TERTIARY    3
+#define PORT_ALT_FUNC_PRIMARY      (0x01) //CAHNGE IT LATER
+#define PORT_ALT_FUNC_SECONDARY    (0x02)
+#define PORT_ALT_FUNC_TERTIARY     (0x03)
+#define PORT_MODE_IT_FALLING_E     (0x04)
+#define PORT_MODE_IT_RISING_E      (0x05)
 
   /*
    * MSP_Port_selection
@@ -67,6 +69,8 @@
 
 
 
+
+
 #define PORT_SET   1
 #define PORT_RESET 0
 
@@ -104,6 +108,10 @@ uint8_t MSP_Port_ReadPin(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
 uint8_t MSP_Port_ReadPort(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
 MSP_Status_t MSP_Port_TogglePin(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
 
-
+void MSP_PORT_ClearInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
+uint16_t MSP_PORT_GetInterruptStatus(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
+void MSP_PORT_DisableInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
+void MSP_PORT_EnableInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number);
+void MSP_PORT_SelectInterruptEdge(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number,uint8_t Transition);
 
 #endif /* MSP430_GPIO_DRIVER_H_ */

@@ -20,7 +20,6 @@
 #include "main.h"
 
 
-
 MSP_Status_t MSP_Port_WritePin(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number, uint8_t state)
 {
 
@@ -63,8 +62,6 @@ MSP_Status_t MSP_Port_TogglePin(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
 
 void MSP_Port_Init(PORT_Handle_t *pPORTHandle)
 {
-
-
     EnorDiGPIO(ENABLE);
 
     //Configure the mode selection
@@ -79,26 +76,6 @@ void MSP_Port_Init(PORT_Handle_t *pPORTHandle)
         case PORT_MODE_INPUT:
         {
             pPORTHandle->pPORTx->PDIR &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber); // Set Pin state as input
-
-            // Configuration for pull up/down resistors
-            if(pPORTHandle->PORT_PinConfig.PORT_PinPuPdControl == PORT_NOPULL)
-            {
-                //pass
-            }
-            else if(pPORTHandle->PORT_PinConfig.PORT_PinPuPdControl == PORT_PULLUP)  // Select Pull up
-            {
-                pPORTHandle->pPORTx->PREN |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
-                pPORTHandle->pPORTx->POUT |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
-            }
-            else if(pPORTHandle->PORT_PinConfig.PORT_PinPuPdControl == PORT_PULLDOWN)  // Select Pull down
-            {
-                pPORTHandle->pPORTx->PREN |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
-                pPORTHandle->pPORTx->POUT &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber);
-            }
-            else
-            {
-                //pass
-            }
             break;
         }
         case PORT_MODE_ALT_FUNC:   //  configuration for the alternate function should be done in the peripheral's driver!!DDDD
@@ -125,18 +102,56 @@ void MSP_Port_Init(PORT_Handle_t *pPORTHandle)
                 }
                 default:
                 {
-                    //pass
+                    //TODO
                     break;
                 }
             }
+            break;
+        }
 
-            break;
-        }
-        default:
+        case PORT_MODE_IT_FALLING_E: // GPIO HIGH TO LOW  TRANSITION
+       {
+           pPORTHandle->pPORTx->PDIR &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber); // Set Pin state as input
+           pPORTHandle->pPORTx->PIES |= pPORTHandle->PORT_PinConfig.PORT_PinNumber; //Select HIGH to LOW transition
+           pPORTHandle->pPORTx->PIE  |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;  //Enabled related pin interrupt
+           pPORTHandle->pPORTx->PIFG |= pPORTHandle->PORT_PinConfig.PORT_PinNumber; //Clear interrupt Flag to prevent pre-transition
+           break;
+       }
+       case PORT_MODE_IT_RISING_E: // GPIO LOW TO HIGH TRANSITION
+       {
+           pPORTHandle->pPORTx->PDIR &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber); // Set Pin state as input
+           pPORTHandle->pPORTx->PIES &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber); //Select LOW to HIGH transition
+           pPORTHandle->pPORTx->PIE  |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;  //Enabled related pin interrupt
+           pPORTHandle->pPORTx->PIFG |= pPORTHandle->PORT_PinConfig.PORT_PinNumber; //Clear interrupt Flag to prevent pre-transition
+           break;
+       }
+
+       default:
         {
-            //pass
+            //TODO
             break;
         }
+    }
+
+    // Configuration for pull up/down resistors
+    switch (pPORTHandle->PORT_PinConfig.PORT_PinPuPdControl) {
+        case PORT_NOPULL:
+            //TODO
+            break;
+
+        case PORT_PULLUP:
+            pPORTHandle->pPORTx->PREN |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
+            pPORTHandle->pPORTx->POUT |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
+            break;
+
+        case PORT_PULLDOWN:
+            pPORTHandle->pPORTx->PREN |= pPORTHandle->PORT_PinConfig.PORT_PinNumber;
+            pPORTHandle->pPORTx->POUT &= ~(pPORTHandle->PORT_PinConfig.PORT_PinNumber);
+            break;
+
+        default:
+            //TODO
+            break;
     }
 }
 
@@ -153,5 +168,44 @@ uint8_t MSP_Port_ReadPort(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
     return read;
 }
 
+void MSP_PORT_ClearInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
+{
+    pPORTx->PIFG &= ~(Port_Pin_Number);
+}
+
+
+uint16_t MSP_PORT_GetInterruptStatus(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
+{
+    uint16_t read = (uint16_t)(pPORTx->PIFG & Port_Pin_Number);
+    return read;
+}
+
+
+void MSP_PORT_DisableInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
+{
+    pPORTx->PIE &= ~(Port_Pin_Number);
+}
+
+
+void MSP_PORT_EnableInterrupt(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number)
+{
+    pPORTx->PIE |= (Port_Pin_Number);
+}
+
+void MSP_PORT_SelectInterruptEdge(PORT_RegDef_t *pPORTx, uint8_t Port_Pin_Number,uint8_t Transition)
+{
+
+    switch (Transition) {
+        case FALLING_EDGE:
+            pPORTx->PIES |= (Port_Pin_Number);
+            break;
+        case RISING_EDGE:
+            pPORTx->PIES &= ~(Port_Pin_Number);
+            break;
+        default:
+            //TODO
+            break;
+    }
+}
 
 #endif /* MSP430_GPIO_DRIVER_C_ */
