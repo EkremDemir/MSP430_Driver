@@ -10,7 +10,7 @@ int GPIO_EX2(){
 
     PORT_Handle_t PORT_Handle;
 
-    MSP_Port_Init(&PORT_Handle);
+    MSP_PORT_Init(&PORT_Handle);
 
     PORT_Handle.pPORTx = PORT1;
     PORT_Handle.PORT_PinConfig.PORT_PinMode = PORT_MODE_OUTPUT;
@@ -18,18 +18,18 @@ int GPIO_EX2(){
     PORT_Handle.PORT_PinConfig.PORT_PinPuPdControl = PORT_NOPULL;
 
 
-    MSP_Port_Init(&PORT_Handle);
+    MSP_PORT_Init(&PORT_Handle);
 
-    retVal = MSP_Port_WritePin(PORT1, PORT_PIN_0, GPIO_PIN_RESET);
+    retVal = MSP_PORT_WritePin(PORT1, PORT_PIN_0, GPIO_PIN_RESET);
 
     PORT_Handle.PORT_PinConfig.PORT_PinPuPdControl = PORT_PULLUP;
 
-    MSP_Port_Init(&PORT_Handle);
+    MSP_PORT_Init(&PORT_Handle);
 
-    retVal = MSP_Port_WritePin(PORT1, PORT_PIN_0, GPIO_PIN_SET);
+    retVal = MSP_PORT_WritePin(PORT1, PORT_PIN_0, GPIO_PIN_SET);
     PORT_Handle.PORT_PinConfig.PORT_PinPuPdControl = PORT_PULLDOWN;
 
-    MSP_Port_Init(&PORT_Handle);
+    MSP_PORT_Init(&PORT_Handle);
 
     if(retVal == STATE_ERROR){
         return 0;
