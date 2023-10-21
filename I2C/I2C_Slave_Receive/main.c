@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 // Constants
-#define SLAVE_ADDRESS          0x48
+#define SLAVE_ADDRESS          0x56
 #define RECEIVE_BUFFER_SIZE    32
 #define LED_PIN                BIT0
 
