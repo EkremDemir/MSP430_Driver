@@ -21,7 +21,8 @@ This code configures the MSP430G2553 microcontroller to operate as an I2C slave 
 2. Connect the I2C master (e.g., STM32F4 board) to the same I2C bus.
 3. Load the code onto the MSP430G2553 using an appropriate programmer and development environment.
 4. Start the I2C master to send data to the MSP430G2553.
-**5.** If you're using the MSP430G2553 Development Kit, keep in mind that P1.6 is multiplexed with LED2. To utilize P1.6 for I2C communication, ensure that you disconnect or remove the header connected to LED2 on the development kit. This will prevent any interference or unexpected behavior during I2C communication.
+   
+**5. If you're using the MSP430G2553 Development Kit, keep in mind that P1.6 is multiplexed with LED2. To utilize P1.6 for I2C communication, ensure that you disconnect or remove the header connected to LED2 on the development kit. This will prevent any interference or unexpected behavior during I2C communication.**
 
 MSP430G2553         |       Other Device (e.g., STM32F4 board)
 --------------------|------------------------
